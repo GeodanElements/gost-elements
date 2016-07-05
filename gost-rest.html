@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="gost-rest">
+    <template>
+
+    <iron-ajax auto id='request'
+        url='[[requesturl]]'
+        handle-as="json"
+        last-response='{{resultarray}}'
+    ></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+
+Polymer({
+    is: 'gost-rest',
+    properties: {
+        resultarray: {
+            type: Array,
+            notify: true
+        },
+        thingsurl: {
+            type: String,
+            value: ''
+        }
+    },
+    ready: function(){
+
+    },
+    stringify:function(data){
+        return JSON.stringify(data);
+    },
+    getid: function(item){
+    	return item['@iot.id'];
+    }
+
+});
+</script>

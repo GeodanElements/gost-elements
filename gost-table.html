@@ -1,0 +1,47 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../vaadin-grid/vaadin-grid.html">
+
+<dom-module id="gost-table">
+    <template>
+        <vaadin-grid id="simple">
+		  <table>
+		  </table>
+		</vaadin-grid>
+    </template>
+</dom-module>
+
+<script>
+
+Polymer({
+    is: 'gost-table',
+    properties: {
+        resultarray: {
+        	type: Array,
+        	observer: '_dataChanged'
+        },
+        columns: {
+        	type: Array
+        }
+    },
+    ready: function(){
+
+    },
+    _dataChanged: function(){
+    	var self = this;
+    	this.$.simple.columns = this.columns.map(function(d){
+    			return {name: d.title};
+    	});
+    	this.$.simple.items = this.resultarray.value.map(function(d){
+    			return self.columns.map(function(c){
+    					switch (c.type) {
+							case Object:
+								return JSON.stringify(d[c.key]);
+								break;
+							default:
+								return d[c.key];
+    					}
+    			});
+    	});
+    }
+});
+</script>

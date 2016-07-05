@@ -1,0 +1,28 @@
+{
+  "name": "gost-elements",
+  "version": "0.0.1",
+  "homepage": "https://github.com/GeodanElements/gost-elements",
+  "description": "Polymer implementation for GOST",
+  "keywords": [
+    "polymer",
+    "gost"
+  ],
+  "main": [],
+  "authors": [
+    "Tom van Tilburg"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~1",
+    "paper-elements": "PolymerElements/paper-elements#~1",
+    "iron-elements": "PolymerElements/iron-elements#~1",
+    "vaadin-grid": "^1.1.0"
+  }
+}
