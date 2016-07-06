@@ -3,7 +3,7 @@
 
 <dom-module id="gost-table">
     <template>
-        <vaadin-grid id="simple">
+        <vaadin-grid id="grid" selection='{{selection}}'>
 		  <table>
 		  </table>
 		</vaadin-grid>
@@ -21,17 +21,31 @@ Polymer({
         },
         columns: {
         	type: Array
+        },
+        selection: {
+        	type: Object,
+        	observer: '_selectionChanged'
         }
     },
     ready: function(){
-
+    	var self = this;
+		this.$.grid.addEventListener('selected-items-changed', function() {
+			self.$.grid.selection.selected(function(i){
+				var item = self.resultarray.value[i];
+				self.fire('item-selected', item);
+		  	});
+		});
+    },
+    _selectedChanged: function(i){
+    	debugger;
     },
     _dataChanged: function(){
     	var self = this;
-    	this.$.simple.columns = this.columns.map(function(d){
+    	this.$.grid.columns = this.columns.map(function(d){
     			return {name: d.title};
     	});
-    	this.$.simple.items = this.resultarray.value.map(function(d){
+    	
+    	this.$.grid.items = this.resultarray.value.map(function(d){
     			return self.columns.map(function(c){
     					switch (c.type) {
 							case Object:

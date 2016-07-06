@@ -1,0 +1,63 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../leaflet-map/leaflet-map.html">
+
+<dom-module id="gost-map">
+    <template>
+    <style>
+    leaflet-map {
+		height: 600px;
+	}
+  	</style>
+  	<leaflet-map longitude="5.2" latitude="52.4" zoom="9">
+  	<template is='dom-repeat' items='[[resultarray.value]]' >
+		<leaflet-tilelayer 
+			url="https://api.mapbox.com/styles/v1/edenhalperin/cih84uopy000a95m41htugsnm/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZWRlbmhhbHBlcmluIiwiYSI6IlFRZG0zMWMifQ.QUNKx4tIMjZfwmrE8SE6Bg"
+			minzoom="2" maxzoom="16" nowrap>
+		
+		</leaflet-tilelayer>
+		<leaflet-circle 
+			longitude="[[item.location.coordinates.0]]" 
+			latitude="[[item.location.coordinates.1]]" 
+			radius="300"
+			title="[[item.description]]"
+			>
+		</leaflet-circle>
+  	</template>
+  	</leaflet-map>
+  	<!--
+<google-map latitude="37.77493" longitude="-122.41942" fit-to-markers>
+
+	<template is='dom-repeat' items='[[resultarray.value]]' >
+		<google-map-marker 
+			api-key='AIzaSyBGQMCetZtEUANtjfFGRTqr9e3V-y4jqbw'
+			latitude="[[item.location.coordinates.1]]" 
+			longitude="[[item.location.coordinates.0]]"
+			title="[[item.description]]"
+			>
+	</template>
+
+</google-map>
+    -->
+    </template>
+</dom-module>
+
+<script>
+
+Polymer({
+    is: 'gost-map',
+    properties: {
+        resultarray: {
+            type: Array,
+            observer: '_resultarrayChanged'
+        }
+        
+    },
+    ready: function(){
+    	
+    },
+    _resultarrayChanged: function(resultsarray){
+    	
+    }
+
+});
+</script>

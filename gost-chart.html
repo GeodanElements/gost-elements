@@ -1,0 +1,88 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../chart-elements/chart-line.html">
+
+<dom-module id="gost-chart">
+    <template>
+    <style>
+    .chart {
+    	min-width: 600px;
+    	height: 400px;
+    	width: 50%;
+    }
+  	</style>
+  	<chart-line data="[[data]]" class='chart'></chart-line>
+    
+    </template>
+</dom-module>
+
+<script>
+
+Polymer({
+    is: 'gost-chart',
+    properties: {
+        resultarray: {
+            type: Array,
+            observer: '_resultarrayChanged'
+        },
+        label: {
+        	type: String,
+        }
+        
+    },
+    ready: function(){
+    	
+    },
+    _resultarrayChanged: function(resultsarray){
+    	var sortedarray = resultsarray.value.sort(function(a,b){
+    			return new Date(a.phenomenonTime).getTime() - new Date(b.phenomenonTime).getTime();  
+    	});
+    	var labels = sortedarray.map(function(d){
+    			return new Date(d.phenomenonTime).toLocaleString();
+    	}); 
+    	var data = sortedarray.map(function(d){
+    			return d.result;
+    	});
+    	this.data = {
+    		labels: labels,
+    		datasets: [{
+				label: this.label,
+				backgroundColor: "rgba(151,187,205,0.2)",
+				  borderColor: "rgba(151,187,205,1)",
+				  borderWidth: 1,
+    			data: data
+    		}]
+    	}
+    }
+    
+    /** Data should look like:
+    {
+	  labels: ["January", "February", "March", "April", "May", "June", "July"],
+	  datasets: [
+		{
+		  label: "My First dataset",
+		  backgroundColor: "rgba(220,220,220,0.2)",
+		  borderColor: "rgba(220,220,220,1)",
+		  borderWidth: 1,
+		  pointBackgroundColor: "rgba(220,220,220,1)",
+		  pointBorderColor: "#fff",
+		  pointHoverBackgroundColor: "#fff",
+		  pointHoverBorderColor: "rgba(220,220,220,1)",
+		  data: [65, 59, 80, 81, 56, 55, 40]
+		},
+		{
+		  label: "My Second dataset",
+		  backgroundColor: "rgba(151,187,205,0.2)",
+		  borderColor: "rgba(151,187,205,1)",
+		  borderWidth: 1,
+		  pointBackgroundColor: "rgba(151,187,205,1)",
+		  pointBorderColor: "#fff",
+		  pointHighlightFill: "#fff",
+		  pointHoverBorderColor: "rgba(151,187,205,1)",
+		  data: [28, 48, 40, 19, 86, 27, 90]
+		}
+	  ]
+	};
+	**/
+
+});
+</script>
