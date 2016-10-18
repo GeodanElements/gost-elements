@@ -20,12 +20,15 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1",
-    "paper-elements": "PolymerElements/paper-elements#~1",
-    "iron-elements": "PolymerElements/iron-elements#~1",
+    "iron-elements": "^1.0.10",
+    "paper-elements": "^1.0.7",
+    "app-elements": "^0.9.0",
     "vaadin-grid": "^1.1.0",
-    "google-map": "^1.1.10",
     "chart-elements": "^3.1.0",
-    "leaflet-map": "^1.2.0"
+    "leaflet-map": "^1.2.0",
+    "mqtt-elements": "^0.0.6-beta"
+  },
+  "resolutions": {
+    "polymer": "^1.1.0"
   }
 }
