@@ -1,0 +1,130 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mqtt-elements/mqtt-connection.html">
+<link rel="import" href="../mqtt-elements/mqtt-subscription.html">
+
+
+<dom-module id="gost-mqtt">
+    <template>
+    <mqtt-connection
+        id="connection"
+        url="[[url]]"
+        connected="{{connected}}"
+        client="{{client}}"
+        subscriptions="{{subscriptions}}"
+        options='{{options}}'
+        on-mqtt-message='onMessageArrived'
+		on-mqtt-connection-close='onConnectionLost'
+		on-mqtt-connection-error='onConnectionError'>
+    </mqtt-connection>
+    </template>
+</dom-module>
+
+<script>
+
+	 Polymer({
+		is: 'gost-mqtt',
+		properties: {
+			url: {
+				type: String,
+				value: 'ws://gost.geodan.nl:9001/mqtt'
+			},
+			client: {
+				type: Object,
+				notify: true
+			},
+			options: {
+			  type: Object,
+			  computed: "_computeOptions(clientId)",
+			},
+			connected: {
+				notify: true
+			},
+			subscriptions: {
+				type: Array,
+				notify: true
+			}
+			
+		},
+		observers: [
+			
+		],
+		_computeOptions: function (username, password, clientId) {
+			var _options = {
+			  protocolId: "MQTT",
+			  protocolVersion: 4,
+			  keepalive: 10,
+			  reconnectPeriod: 1000,
+			  clientId: "",
+			  encoding: "string",
+			};
+			if(clientId && clientId.length > 0){
+			  _options.clientId = clientId;
+			}
+			return _options;
+		},
+
+		created: function(){
+			
+		},	
+		attached: function(){
+			this.$.connection.connect();
+		},
+			
+		onMessageArrived: function(event,message) {
+			if(message && message.topic) {
+				var data = {
+					topic: message.topic,
+					message: String.fromCharCode.apply(null, message.message)
+				  };
+				this.fire('message',data);
+			}
+			/* 
+			switch (message.topic) {
+				case '$SYS/broker/version':
+					self.brokerVersion = message.payloadString;
+					break;
+				case '$SYS/broker/timestamp':
+					self.brokerTimestamp = message.payloadString;
+					break;
+				case '$SYS/broker/uptime':
+					self.brokerUptime = message.payloadString;
+					break;
+				case '$SYS/broker/subscriptions/count':
+					self.brokerSubscriptions = message.payloadString;
+					break;
+				case '$SYS/broker/clients/connected':
+					self.clientsConnected = message.payloadString;
+					break;
+				case '$SYS/broker/clients/disconnected':
+					self.clientsDisconnected = message.payloadString;
+					break;
+				case '$SYS/broker/clients/expired':
+					self.clientsExpired = message.payloadString;
+					break;
+				case '$SYS/broker/messages/sent':
+					self.messagesSent = message.payloadString;
+					break;
+				case '$SYS/broker/messages/received':
+					self.messagesReceived = message.payloadString;
+					break;
+				case '$SYS/broker/messages/stored':
+					self.messagesStored = message.payloadString;
+					break;
+				case '$SYS/broker/bytes/sent':
+					self.trafficSent = message.payloadString;
+					break;
+				case '$SYS/broker/bytes/received':
+					self.trafficReceived = message.payloadString;
+					break;
+			}
+			*/
+	 	},
+		onConnectionLost: function(e,msg){
+			console.log(e);
+		},
+		onConnectionError: function(e){
+			console.log(e);
+		}
+	});
+	
+</script>
