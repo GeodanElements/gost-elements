@@ -25,7 +25,6 @@
     "app-elements": "~0",
     "vaadin-grid": "~1",
     "chart-elements": "~3",
-    "leaflet-map": "~1",
-    "mqtt-elements": "~0"
+    "leaflet-map": "~1"
   }
 }
