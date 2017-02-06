@@ -22,9 +22,7 @@
   "dependencies": {
     "iron-elements": "~1",
     "paper-elements": "~1",
-    "app-elements": "~0",
     "vaadin-grid": "~1",
-    "chart-elements": "~3",
-    "leaflet-map": "~1"
+    "chart-elements": "~3"
   }
 }
