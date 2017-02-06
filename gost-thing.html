@@ -1,0 +1,107 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="gost-thing">
+    <template>
+    <content>
+    
+    </content>
+    
+    <iron-ajax auto id='request'
+        url='[[url]]'
+        handle-as="json"
+        last-response='{{resultarray}}'
+        on-response='_handleResponse'
+    ></iron-ajax>
+    
+    	<iron-ajax auto 
+			url='[[locationsurl]]'
+			handle-as="json"
+			on-response="handleLocationResponse"
+			>
+		</iron-ajax>
+		<iron-ajax auto 
+			url='[[datastreamsurl]]'
+			handle-as="json"
+			on-response="handleDatastreamResponse"
+			>
+		</iron-ajax>
+    
+    </template>
+</dom-module>
+
+<script>
+
+Polymer({
+    is: 'gost-thing',
+    properties: {
+        gid: {
+        	type: Number
+        },
+        selfLink: {
+        	type: String
+        },
+        name: {
+        	type: String
+        },
+        description: {
+        	type: String
+        },
+        properties: {
+        	type: Object
+        },
+        datastreamsurl: {
+        	type: String
+        },
+        historicallocationsurl: {
+        	type: String
+        },
+        locationsurl: {
+        	type: String
+        },
+        url: {
+            type: String
+        },
+        baseurl: {
+        	type: String
+        },
+        locations: {
+        	type: Array
+        },
+        datastreams: {
+        	type: Array
+        }
+    },
+    observers: [
+    	'_request(gid, baseurl)'
+    ],
+    ready: function(){
+    	
+    },
+    _request: function(){
+    	this.url = this.baseurl + '/Things('+this.gid+')';
+    	this.$.request.generateRequest();
+    },
+    _handleResponse: function(res){
+    	var response = res.detail.response;
+    	this.name = response.name;
+    	this.description = response.description;
+    	this.properties = response.properties;
+    	this.datastreamsUrl = response['Datastreams@iot.navigationLink'];
+    	this.historicallocationsurl = response['HistoricalLocations@iot.navigationLink'];
+    	this.locationsurl = response['Locations@iot.navigationLink'];
+    },
+    handleLocationResponse: function(res){
+    	var response = res.detail.response;
+    	this.locations = response.value;
+    	this.fire('locations', this.locations, {bubbles: this.bubbles});
+    },
+    handleDatastreamResponse: function(res){
+    	var response = res.detail.response;
+    	this.datastreams = response.value;
+    	this.fire('datastreams', this.datastreams, {bubbles: this.bubbles});
+    }
+    
+
+});
+</script>
