@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <dom-module id="gost-rest">
@@ -6,35 +7,88 @@
 
     <iron-ajax auto id='request'
         url='[[requesturl]]'
+        params='[[params]]'
+        method='[[method]]'
         handle-as="json"
-        last-response='{{resultarray}}'
+        on-response="_handleResponse"
+        debounce-duration="300"
+    ></iron-ajax>
+    <iron-ajax id='deleterequest'
+        url='[[deleteurl]]'
+        method='DELETE'
+        handle-as="json"
+        on-response="_handleDeleteResponse"
+        debounce-duration="300"
+    ></iron-ajax>
+    <iron-ajax id='createrequest'
+        url='[[createurl]]'
+        method='DELETE'
+        handle-as="json"
+        on-response="_handleDeleteResponse"
+        debounce-duration="300"
     ></iron-ajax>
     </template>
-</dom-module>
+
 
 <script>
+class GostRest extends Polymer.Element {
+    static get is() {return  'gost-rest'}
 
-Polymer({
-    is: 'gost-rest',
-    properties: {
-        resultarray: {
-            type: Array,
-            notify: true
-        },
-        thingsurl: {
-            type: String,
-            value: ''
-        }
-    },
-    ready: function(){
-
-    },
-    stringify:function(data){
+    static get properties() {
+        return {
+            resultarray: {
+                type: Array,
+                notify: true
+            },
+            requesturl: {
+                type: String
+            },
+            deleteurl: {
+                type: String
+            },
+            params: {
+                type: Object
+            },
+            filter: {
+                type: String,
+                observer: '_filterChanged'
+            },
+            method: {
+                type: String,
+                value: 'GET'
+            },
+            result: {
+                type: Array,
+                notify: true
+            }
+        };
+    }
+    _filterChanged(newValue, oldValue){
+        this.params = {'$filter':newValue};
+    }
+    _handleResponse(response){
+        //TODO: check for errors
+        this.result = response.detail.response.value;
+    }
+    stringify(data){
         return JSON.stringify(data);
-    },
-    getid: function(item){
+    }
+    getid(item) {
     	return item['@iot.id'];
     }
+    refresh(){
+        this.$.request.generateRequest();
+    }
+    delete(id){
+        this.deleteurl = this.requesturl + '(' + id + ')';
+        this.$.deleterequest.generateRequest();
+    }
+    _handleDeleteResponse(response){
+        this.dispatchEvent(new CustomEvent('deleted'));
+        this.$.request.generateRequest();
+    }
 
-});
+};
+window.customElements.define(GostRest.is,GostRest);
 </script>
+</dom-module>

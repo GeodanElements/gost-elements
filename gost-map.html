@@ -39,25 +39,25 @@
 </google-map>
     -->
     </template>
-</dom-module>
+
 
 <script>
 
-Polymer({
-    is: 'gost-map',
-    properties: {
+class GostMap extends Polymer.Element {
+    static get is() {return 'gost-map'}
+    static get properties() {return {
         resultarray: {
             type: Array,
             observer: '_resultarrayChanged'
         }
         
-    },
-    ready: function(){
-    	
-    },
-    _resultarrayChanged: function(resultsarray){
+    }}
+    
+    _resultarrayChanged(resultsarray){
     	
     }
 
-});
+};
+window.customElements.define(GostMap.is, GostMap);
 </script>
+</dom-module>

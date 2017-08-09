@@ -1,33 +1,40 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../vaadin-grid/vaadin-grid.html">
 
+
 <dom-module id="gost-table">
     <template>
-        <vaadin-grid id="grid" selection='{{selection}}'>
-		  <table>
-		  </table>
+        <vaadin-grid id="grid" selection='{{selection}}' size="200" items="[[resultarray.value]]">
+		   <template is="dom-repeat" items="[[columns]]" as="column">
+				<vaadin-grid-column>
+				<template class="header">[[column.title]]</template>
+				<template>[[get(column.key, item)]]</template>
+				</vaadin-grid-column>
+			</template>
 		</vaadin-grid>
     </template>
-</dom-module>
+
 
 <script>
-
-Polymer({
-    is: 'gost-table',
-    properties: {
-        resultarray: {
-        	type: Array,
-        	observer: '_dataChanged'
-        },
-        columns: {
-        	type: Array
-        },
-        selection: {
-        	type: Object,
-        	observer: '_selectionChanged'
-        }
-    },
-    ready: function(){
+class GostTable extends Polymer.Element {
+	static get is() {return 'gost-table'}
+    static get properties() {
+		return {
+			resultarray: {
+				type: Array,
+				observer: '_dataChanged'
+			},
+			columns: {
+				type: Array
+			},
+			selection: {
+				type: Object,
+				observer: '_selectionChanged'
+			}
+		}
+    }
+    ready(){
+		super.ready();
     	var self = this;
 		this.$.grid.addEventListener('selected-items-changed', function() {
 			self.$.grid.selection.selected(function(i){
@@ -35,27 +42,35 @@ Polymer({
 				self.fire('item-selected', item);
 		  	});
 		});
-    },
-    _selectedChanged: function(i){
+    }
+	_parseData(c){
+		switch (c.type) {
+			case Object:
+				return JSON.stringify(d[c.key]);
+			default:
+				return d[c.key];
+		}
+	}
+    _selectedChanged(i){
     	debugger;
-    },
-    _dataChanged: function(){
+    }
+    _dataChanged(){
     	var self = this;
-    	this.$.grid.columns = this.columns.map(function(d){
-    			return {name: d.title};
-    	});
-    	
-    	this.$.grid.items = this.resultarray.value.map(function(d){
+		/*
+    	var data = this.resultarray.value.map(function(d){
     			return self.columns.map(function(c){
     					switch (c.type) {
 							case Object:
 								return JSON.stringify(d[c.key]);
-								break;
 							default:
 								return d[c.key];
     					}
     			});
     	});
+		this.data = data;
+		*/
     }
-});
+};
+window.customElements.define(GostTable.is, GostTable);
 </script>
+</dom-module>

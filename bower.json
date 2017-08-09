@@ -1,28 +1,15 @@
 {
   "name": "gost-elements",
-  "version": "0.0.1",
-  "homepage": "https://github.com/GeodanElements/gost-elements",
-  "description": "Polymer implementation for GOST",
-  "keywords": [
-    "polymer",
-    "gost"
-  ],
-  "main": [],
-  "authors": [
-    "Tom van Tilburg"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "description": "Elements that provide tools and widgets for GOST",
+  "main": "gost-elements.html",
   "dependencies": {
-    "iron-elements": "~1",
-    "paper-elements": "~1",
-    "vaadin-grid": "~1",
-    "chart-elements": "~3"
+    "polymer": "Polymer/polymer#~2",
+    "vaadin-grid": "master",
+    "iron-ajax": "PolymerElements/iron-ajax#v2.0.0"
+  },
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   }
 }

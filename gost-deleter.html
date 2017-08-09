@@ -1,0 +1,52 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<dom-module id="gost-deleter">
+<template>
+    <iron-ajax id="createrequest"
+        content-type="application/json"
+        handle-as="json"
+        method="DELETE"
+        last-response='{{resultarray}}'
+        on-response='_handleResponse'
+    >
+
+    </iron-ajax>
+
+</template>
+<script>
+class GostDeleter extends Polymer.Element {
+    static get is(){return "gost-deleter";}
+    static get properties(){
+        return {
+            url: {
+                type: String,
+                value: 'http://gost.geodan.nl/v1.0'
+            },
+            requesturl: String,
+            params: {
+                type: Object
+            },
+            resultarray: {
+                type: Array
+            }
+        }
+
+    }
+    createThing(params){
+        this.$.createrequest.body = params;
+        this.$.createrequest.url = this.url + "/Things";
+        this.$.createrequest.generateRequest();
+    }
+    _parseparams(params){
+        return JSON.stringify(params);
+    }
+    _handleResponse(a,b,c){
+        console.log(a,b,c);
+        debugger;
+    }
+
+}
+window.customElements.define(GostCreator.is, GostCreator)
+</script>
+
+</dom-module>

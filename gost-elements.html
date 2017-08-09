@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="gost-elements">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `gost-elements`
+     * Elements that provide tools and widgets for GOST
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class GostElements extends Polymer.Element {
+      static get is() { return 'gost-elements'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'gost-elements'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(GostElements.is, GostElements);
+  </script>
+</dom-module>

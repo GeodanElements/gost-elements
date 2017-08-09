@@ -1,0 +1,33 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="gost-rest.html">
+
+<dom-module id="gost-things">
+<script>
+class GostThings extends GostRest {
+    static get is() {return  'gost-things'}
+
+    static get properties() {
+        return {
+            things: {
+                type: Array,
+                notify: true
+            }
+        };
+    }
+    constructor(){
+        super();
+        
+    }
+    ready(){
+        super.ready();
+        
+    }
+    _handleResponse(response){
+        this.things = response.detail.response.value;
+    }
+
+};
+window.customElements.define(GostThings.is,GostThings);
+</script>
+</dom-module>

@@ -1,10 +1,13 @@
 <link rel="import" href="../polymer/polymer.html">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+<!--
 <link rel="import" href="../mqtt-elements/mqtt-connection.html">
 <link rel="import" href="../mqtt-elements/mqtt-subscription.html">
-
+-->
 
 <dom-module id="gost-mqtt">
     <template>
+		<!--
     <mqtt-connection
         id="connection"
         url="[[url]]"
@@ -16,65 +19,58 @@
 		on-mqtt-connection-close='onConnectionLost'
 		on-mqtt-connection-error='onConnectionError'>
     </mqtt-connection>
+	-->
     </template>
-</dom-module>
+
 
 <script>
 
-	 Polymer({
-		is: 'gost-mqtt',
-		properties: {
+	 class GostMqtt extends Polymer.Element {
+		static get is() {return 'gost-mqtt'}
+		static get properties() {return {
 			url: {
 				type: String,
-				value: 'ws://gost.geodan.nl:9001/mqtt'
+				value: 'gost.geodan.nl'
 			},
 			client: {
 				type: Object,
 				notify: true
 			},
-			options: {
-			  type: Object,
-			  computed: "_computeOptions(clientId)",
-			},
 			connected: {
 				notify: true
-			},
-			subscriptions: {
-				type: Array,
-				notify: true
 			}
+		}}
+		static get observers(){return [
 			
-		},
-		observers: [
-			
-		],
-		_computeOptions: function (username, password, clientId) {
-			var _options = {
-			  protocolId: "MQTT",
-			  protocolVersion: 4,
-			  keepalive: 10,
-			  reconnectPeriod: 1000,
-			  clientId: "",
-			  encoding: "string",
-			};
-			if(clientId && clientId.length > 0){
-			  _options.clientId = clientId;
+		]}
+		ready(){
+			//Got this from https://github.com/gost/dashboard/blob/master/content/js/app.js
+			function guid() {
+				function s4() {
+					return Math.floor((1 + Math.random()) * 0x10000)
+					.toString(16)
+					.substring(1);
+				}
+				return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+					s4() + '-' + s4() + s4() + s4();
 			}
-			return _options;
-		},
-
-		created: function(){
-			
-		},	
-		attached: function(){
-			this.$.connection.connect();
-		},
-			
-		onMessageArrived: function(event,message) {
-			if(message && message.topic) {
+			function onConnect() {
+				console.log('Yeah, connected');
+				self.client.subscribe("Datastreams(1)/Observations");
+			}
+			super.ready();
+			var self = this;
+			this.client = new Paho.MQTT.Client(this.url, Number(9001), guid());
+			this.client.onConnectionLost = this.onConnectionLost;
+			this.client.onMessageArrived = this.onMessageArrived;
+			this.client.connect({ onSuccess: onConnect });
+		}
+		
+		onMessageArrived(message) {
+			if(message && message.destinationName) {
 				var data = {
-					topic: message.topic,
-					message: String.fromCharCode.apply(null, message.message)
+					topic: message.destinationName,
+					message: JSON.parse(message.payloadString)
 				  };
 				this.fire('message',data);
 			}
@@ -118,13 +114,14 @@
 					break;
 			}
 			*/
-	 	},
-		onConnectionLost: function(e,msg){
-			console.log(e);
-		},
-		onConnectionError: function(e){
+	 	}
+		onConnectionLost(e,msg){
 			console.log(e);
 		}
-	});
-	
+		onConnectionError(e){
+			console.log(e);
+		}
+	};
+	window.customElements.define(GostMqtt.is, GostMqtt);
 </script>
+</dom-module>

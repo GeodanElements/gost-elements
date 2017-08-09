@@ -1,0 +1,51 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<dom-module id="gost-creator">
+<template>
+    <iron-ajax id="createrequest"
+        content-type="application/json"
+        handle-as="json"
+        method="POST"
+        last-response='{{resultarray}}'
+        on-response='_handleResponse'
+    >
+
+    </iron-ajax>
+
+</template>
+<script>
+class GostCreator extends Polymer.Element {
+    static get is(){return "gost-creator";}
+    static get properties(){
+        return {
+            url: {
+                type: String,
+                value: 'http://gost.geodan.nl/v1.0'
+            },
+            requesturl: String,
+            params: {
+                type: Object
+            },
+            resultarray: {
+                type: Array
+            }
+        }
+
+    }
+    createThing(params){
+        this.$.createrequest.body = params;
+        this.$.createrequest.url = this.url + "/Things";
+        this.$.createrequest.generateRequest();
+    }
+    _parseparams(params){
+        return JSON.stringify(params);
+    }
+    _handleResponse(a,b,c){
+        console.log(a,b,c);
+    }
+
+}
+window.customElements.define(GostCreator.is, GostCreator)
+</script>
+
+</dom-module>

@@ -28,13 +28,13 @@
 		</iron-ajax>
     
     </template>
-</dom-module>
+
 
 <script>
 
-Polymer({
-    is: 'gost-thing',
-    properties: {
+class GostThing extends Polymer.Element {
+    static get is() {return 'gost-thing'}
+    static get properties() {return {
         gid: {
         	type: Number
         },
@@ -71,18 +71,19 @@ Polymer({
         datastreams: {
         	type: Array
         }
-    },
-    observers: [
+    }
+    }
+    static get observers() {return [
     	'_request(gid, baseurl)'
-    ],
-    ready: function(){
+    ]}
+    ready(){
     	
-    },
-    _request: function(){
+    }
+    _request(){
     	this.url = this.baseurl + '/Things('+this.gid+')';
     	this.$.request.generateRequest();
-    },
-    _handleResponse: function(res){
+    }
+    _handleResponse(res){
     	var response = res.detail.response;
     	this.name = response.name;
     	this.description = response.description;
@@ -90,18 +91,20 @@ Polymer({
     	this.datastreamsUrl = response['Datastreams@iot.navigationLink'];
     	this.historicallocationsurl = response['HistoricalLocations@iot.navigationLink'];
     	this.locationsurl = response['Locations@iot.navigationLink'];
-    },
-    handleLocationResponse: function(res){
+    }
+    handleLocationResponse(res){
     	var response = res.detail.response;
     	this.locations = response.value;
     	this.fire('locations', this.locations, {bubbles: this.bubbles});
-    },
-    handleDatastreamResponse: function(res){
+    }
+    handleDatastreamResponse(res){
     	var response = res.detail.response;
     	this.datastreams = response.value;
     	this.fire('datastreams', this.datastreams, {bubbles: this.bubbles});
     }
     
 
-});
+};
+window.customElements.define(GostThing.is, GostThing);
 </script>
+</dom-module>
