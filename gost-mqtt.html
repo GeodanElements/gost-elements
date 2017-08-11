@@ -37,6 +37,8 @@
 				notify: true
 			},
 			connected: {
+				type: Boolean,
+				value: false,
 				notify: true
 			}
 		}}
@@ -54,25 +56,39 @@
 				return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 					s4() + '-' + s4() + s4() + s4();
 			}
-			function onConnect() {
-				console.log('Yeah, connected');
-				self.client.subscribe("Datastreams(1)/Observations");
-			}
+			
 			super.ready();
 			var self = this;
 			this.client = new Paho.MQTT.Client(this.url, Number(9001), guid());
 			this.client.onConnectionLost = this.onConnectionLost;
 			this.client.onMessageArrived = this.onMessageArrived;
+			
+		}
+		connect(){
+			var self=this;
+			function onConnect() {
+				self.dispatchEvent(new CustomEvent('connected'));
+				console.log('MQTT connected');
+				self.connected = true;
+				
+			}
 			this.client.connect({ onSuccess: onConnect });
 		}
-		
+		subscribe(topic){
+			this.client.subscribe(topic);
+		}
+		send(topic,content){
+			var message = new Paho.MQTT.Message(JSON.stringify(content));
+        	message.destinationName = topic;
+        	this.client.send(message);
+		}
 		onMessageArrived(message) {
 			if(message && message.destinationName) {
 				var data = {
 					topic: message.destinationName,
 					message: JSON.parse(message.payloadString)
 				  };
-				this.fire('message',data);
+				self.dispatchEvent(new CustomEvent('message',data));
 			}
 			/* 
 			switch (message.topic) {

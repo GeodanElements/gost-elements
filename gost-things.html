@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="gost-rest.html">
+<link rel="import" href="gost-thing.html">
 
 <dom-module id="gost-things">
 <script>
@@ -13,20 +14,18 @@ class GostThings extends GostRest {
                 type: Array,
                 notify: true
             }
+            
         };
     }
     constructor(){
         super();
-        
     }
     ready(){
         super.ready();
-        
     }
-    _handleResponse(response){
-        this.things = response.detail.response.value;
-    }
+    getThing(thingid){
 
+    }
 };
 window.customElements.define(GostThings.is,GostThings);
 </script>

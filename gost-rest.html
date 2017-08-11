@@ -47,7 +47,10 @@ class GostRest extends Polymer.Element {
                 type: String
             },
             params: {
-                type: Object
+                type: Object,
+                value: ()=>{
+                    return {};
+                }
             },
             filter: {
                 type: String,
@@ -60,15 +63,21 @@ class GostRest extends Polymer.Element {
             result: {
                 type: Array,
                 notify: true
+            },
+            firstconnect: {
+                type: Boolean,
+                value: false,
+                notify: true
             }
         };
     }
     _filterChanged(newValue, oldValue){
-        this.params = {'$filter':newValue};
+        this.params['$filter'] = newValue;
     }
     _handleResponse(response){
         //TODO: check for errors
         this.result = response.detail.response.value;
+        this.firstconnect = true;
     }
     stringify(data){
         return JSON.stringify(data);

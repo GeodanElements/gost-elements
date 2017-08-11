@@ -41,7 +41,9 @@ class GostCreator extends Polymer.Element {
         return JSON.stringify(params);
     }
     _handleResponse(a,b,c){
-        console.log(a,b,c);
+        this.dispatchEvent(new CustomEvent('created',{
+            detail: a.detail.response
+        }));
     }
 
 }

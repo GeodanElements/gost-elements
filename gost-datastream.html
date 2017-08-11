@@ -1,0 +1,110 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="gost-datastream">
+    <template>
+    <iron-ajax auto id='datastream'
+        url='[[datastreamurl]]'
+        params='[[params]]'
+        method='GET'
+        handle-as="json"
+        on-response="_handleDatastream"
+        debounce-duration="300"
+    ></iron-ajax>
+    <iron-ajax auto id='observations'
+        url='[[observationsurl]]'
+        params='[[params]]'
+        method='GET'
+        handle-as="json"
+        on-response="_handleObservations"
+        debounce-duration="300"
+    ></iron-ajax>
+    <iron-ajax id='addObservation'
+        url='[[observationsurl]]'
+        method='POST'
+        handle-as="json"
+        content-type="application/json"
+        on-response="_handleAddObservation"
+        debounce-duration="300"
+    ></iron-ajax>
+
+
+    </template>
+
+
+<script>
+class GostDatastream extends Polymer.Element {
+    static get is() {return  'gost-datastream'}
+
+    static get properties() {
+        return {
+            observations: {
+                type: Array,
+                notify: true
+            },
+            baseurl: {
+                type: String
+            },
+            datastreamid: {
+                type: Number
+            },
+            datastreamurl: {
+                type: String,
+                computed: '_computeDatastreamUrl(baseurl, datastreamid)'
+            },
+            observationsurl: {
+                type: String,
+                computed: '_computeObservationsUrl(datastreamurl)'
+            },
+            params: {
+                type: Object,
+                value: ()=>{
+                    return {};
+                }
+            },
+            filter: {
+                type: String,
+                observer: '_filterChanged'
+            }
+        };
+    }
+    _computeDatastreamUrl(baseurl, datastreamid){
+        if (baseurl && datastreamid){
+            return baseurl + '/Datastreams('+datastreamid+')';
+        }
+    }
+    _computeObservationsUrl(datastreamurl){
+        return datastreamurl + '/Observations'
+    }
+    _filterChanged(newValue, oldValue){
+        this.params['$filter'] = newValue;
+    }
+    _handleDatastream(response){
+        this.datastream=response.detail.response.value;
+    }
+    _handleObservations(response){
+        this.observations = response.detail.response.value;
+    }
+    stringify(data){
+        return JSON.stringify(data);
+    }
+    getid(item) {
+    	return item['@iot.id'];
+    }
+    refresh(){
+        this.$.observations.generateRequest();
+    }
+    addObservation(data){
+        this.$.addObservation.body =data;
+        this.$.addObservation.generateRequest();
+    }
+    _handleAddObservation(response){
+        this.dispatchEvent(new CustomEvent('added'));
+        console.log(response);
+    }
+
+};
+window.customElements.define(GostDatastream.is,GostDatastream);
+</script>
+</dom-module>
